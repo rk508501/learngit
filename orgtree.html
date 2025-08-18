@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Organization Tree</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
+      .org-tree {
+        text-align: center;
+        width: 100%;
+        overflow-x: auto;
+        padding: 20px;
+      }
+      .tile {
+        display: inline-block;
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px;
+        width: 200px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .squad-tile {
+        display: inline-block;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 10px;
+        width: 200px;
+        text-align: left;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .level-1 {
+        margin-bottom: 20px;
+      }
+      .level-2 {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 10px;
+      }
+      .tower {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 20px;
+        flex: 0 0 auto;
+      }
+      .squad {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+      }
+      h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #555;
+      }
+      .squad-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 5px;
+      }
+      .level-2::-webkit-scrollbar {
+        height: 10px;
+      }
+      .level-2::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 5px;
+      }
+      .level-2::-webkit-scrollbar-track {
+        background-color: #f0f0f0;
+      }
+      .search-container {
+        margin-bottom: 20px;
+      }
+      .search-container input {
+        padding: 8px;
+        width: 300px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .highlight {
+        background-color: yellow;
+      }
+      .squad-highlight {
+        border: 2px solid yellow;
+        background-color: rgba(255, 255, 0, 0.1);
+      }
+      .tower-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .lead {
+        font-size: 14px;
+        color: #555;
+        margin: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="org-tree">
+      <div class="search-container">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search for a person or squad..."
+        />
+      </div>
+      <!-- SVP -->
+      <div class="level-1">
+        <div class="tile">
+          <h3>John Smith</h3>
+          <p>SVP</p>
+        </div>
+      </div>
+
+      <!-- AVPs -->
+      <div class="level-2">
+        <div class="tower">
+          <div class="tile">
+            <div class="tower-title">Tower 1</div>
+            <p class="lead">Function Lead: Bob Lee</p>
+            <p class="lead">Automation Lead: Carol White</p>
+          </div>
+          <div class="squad">
+            <div class="squad-tile">
+              <div class="squad-title">Squad 1</div>
+              <p>Functional Lead: Bob Lee</p>
+              <p>Automation Lead: Carol White</p>
+              <p>Sam Carter - 100%</p>
+              <p>Lucy Hayes - 100%</p>
+              <p>Tom Reed - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 2</div>
+              <p>Functional Lead: David Brown</p>
+              <p>Automation Lead: Emma Davis</p>
+              <p>Amy Ford - 100%</p>
+              <p>Jack Cole - 100%</p>
+              <p>Lisa King - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 3</div>
+              <p>Functional Lead: Frank Wilson</p>
+              <p>Automation Lead: Grace Taylor</p>
+              <p>Mark Bell - 100%</p>
+              <p>Nina Scott - 100%</p>
+              <p>Paul Ward - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 4</div>
+              <p>Functional Lead: Henry Moore</p>
+              <p>Automation Lead: Isabella Clark</p>
+              <p>Ryan Fox - 100%</p>
+              <p>Zoe Lane - 100%</p>
+              <p>Ella Stone - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 5</div>
+              <p>Functional Lead: James Adams</p>
+              <p>Automation Lead: Kate Martin</p>
+              <p>Owen Grant - 100%</p>
+              <p>Tara Brooks - 100%</p>
+              <p>Liam Chen - 100%</p>
+            </div>
+          </div>
+        </div>
+        <div class="tower">
+          <div class="tile">
+            <div class="tower-title">Tower 2</div>
+            <p class="lead">Function Lead: Liam Walker</p>
+            <p class="lead">Automation Lead: Mia Harris</p>
+          </div>
+          <div class="squad">
+            <div class="squad-tile">
+              <div class="squad-title">Squad 1</div>
+              <p>Functional Lead: Liam Walker</p>
+              <p>Automation Lead: Mia Harris</p>
+              <p>Ava Patel - 100%</p>
+              <p>Noah Lewis - 100%</p>
+              <p>Sophia Young - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 2</div>
+              <p>Functional Lead: Noah Lewis</p>
+              <p>Automation Lead: Olivia Young</p>
+              <p>Ethan Hall - 100%</p>
+              <p>Isabella Green - 100%</p>
+              <p>Jacob King - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 3</div>
+              <p>Functional Lead: Peter King</p>
+              <p>Automation Lead: Quinn Scott</p>
+              <p>Rachel Evans - 100%</p>
+              <p>Samuel Cole - 100%</p>
+              <p>Tara Dean - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 4</div>
+              <p>Functional Lead: Rachel Green</p>
+              <p>Automation Lead: Samuel Hall</p>
+              <p>Victor Lane - 100%</p>
+              <p>Zoe Carter - 100%</p>
+              <p>Adam Bell - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 5</div>
+              <p>Functional Lead: Tara Brooks</p>
+              <p>Automation Lead: Victor Lane</p>
+              <p>Betty Fox - 100%</p>
+              <p>Charles Gray - 100%</p>
+              <p>Diana Hill - 100%</p>
+            </div>
+          </div>
+        </div>
+        <div class="tower">
+          <div class="tile">
+            <div class="tower-title">Tower 3</div>
+            <p class="lead">Function Lead: William Reed</p>
+            <p class="lead">Automation Lead: Zoe Carter</p>
+          </div>
+          <div class="squad">
+            <div class="squad-tile">
+              <div class="squad-title">Squad 1</div>
+              <p>Functional Lead: William Reed</p>
+              <p>Automation Lead: Zoe Carter</p>
+              <p>Aaron Bell - 100%</p>
+              <p>Betty Fox - 100%</p>
+              <p>Charles Gray - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 2</div>
+              <p>Functional Lead: Aaron Bell</p>
+              <p>Automation Lead: Betty Fox</p>
+              <p>Diana Hill - 100%</p>
+              <p>Evan Ward - 100%</p>
+              <p>Fiona Ross - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 3</div>
+              <p>Functional Lead: Charles Gray</p>
+              <p>Automation Lead: Diana Hill</p>
+              <p>George Cole - 100%</p>
+              <p>Hannah Perry - 100%</p>
+              <p>Ian Hayes - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 4</div>
+              <p>Functional Lead: Evan Ward</p>
+              <p>Automation Lead: Fiona Ross</p>
+              <p>Julia Ford - 100%</p>
+              <p>Kevin Long - 100%</p>
+              <p>Laura Cook - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 5</div>
+              <p>Functional Lead: George Cole</p>
+              <p>Automation Lead: Hannah Perry</p>
+              <p>Matthew Price - 100%</p>
+              <p>Nancy Evans - 100%</p>
+              <p>Oscar Stone - 100%</p>
+            </div>
+          </div>
+        </div>
+        <div class="tower">
+          <div class="tile">
+            <div class="tower-title">Tower 4</div>
+            <p class="lead">Function Lead: Ian Hayes</p>
+            <p class="lead">Automation Lead: Julia Ford</p>
+          </div>
+          <div class="squad">
+            <div class="squad-tile">
+              <div class="squad-title">Squad 1</div>
+              <p>Functional Lead: Ian Hayes</p>
+              <p>Automation Lead: Julia Ford</p>
+              <p>Paula Dean - 100%</p>
+              <p>Quentin Fox - 100%</p>
+              <p>Rose Knight - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 2</div>
+              <p>Functional Lead: Kevin Long</p>
+              <p>Automation Lead: Laura Cook</p>
+              <p>Steve Grant - 100%</p>
+              <p>Tina Holt - 100%</p>
+              <p>Ulysses Day - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 3</div>
+              <p>Functional Lead: Matthew Price</p>
+              <p>Automation Lead: Nancy Evans</p>
+              <p>Vera Miles - 100%</p>
+              <p>Walter Quinn - 100%</p>
+              <p>Xena Hart - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 4</div>
+              <p>Functional Lead: Oscar Stone</p>
+              <p>Automation Lead: Paula Dean</p>
+              <p>Yvonne Blake - 100%</p>
+              <p>Zack Fields - 100%</p>
+              <p>Adam West - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 5</div>
+              <p>Functional Lead: Quentin Fox</p>
+              <p>Automation Lead: Rose Knight</p>
+              <p>Brenda Lane - 100%</p>
+              <p>Charles Hill - 100%</p>
+              <p>Diana Cole - 100%</p>
+            </div>
+          </div>
+        </div>
+        <div class="tower">
+          <div class="tile">
+            <div class="tower-title">Tower 5</div>
+            <p class="lead">Function Lead: Steve Grant</p>
+            <p class="lead">Automation Lead: Tina Holt</p>
+          </div>
+          <div class="squad">
+            <div class="squad-tile">
+              <div class="squad-title">Squad 1</div>
+              <p>Functional Lead: Steve Grant</p>
+              <p>Automation Lead: Tina Holt</p>
+              <p>Evan Ross - 100%</p>
+              <p>Fiona Ward - 100%</p>
+              <p>George King - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 2</div>
+              <p>Functional Lead: Ulysses Day</p>
+              <p>Automation Lead: Vera Miles</p>
+              <p>Hannah Scott - 100%</p>
+              <p>Ian Brooks - 100%</p>
+              <p>Julia Evans - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 3</div>
+              <p>Functional Lead: Walter Quinn</p>
+              <p>Automation Lead: Xena Hart</p>
+              <p>Kevin Stone - 100%</p>
+              <p>Laura Fox - 100%</p>
+              <p>Matthew Dean - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 4</div>
+              <p>Functional Lead: Yvonne Blake</p>
+              <p>Automation Lead: Zack Fields</p>
+              <p>Nancy Cole - 100%</p>
+              <p>Oscar Patel - 100%</p>
+              <p>Paula Reed - 100%</p>
+            </div>
+            <div class="squad-tile">
+              <div class="squad-title">Squad 5</div>
+              <p>Functional Lead: Adam West</p>
+              <p>Automation Lead: Brenda Lane</p>
+              <p>Quentin Hayes - 100%</p>
+              <p>Rose Carter - 100%</p>
+              <p>Samuel Bell - 100%</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const searchInput = document.getElementById("searchInput");
+
+      searchInput.addEventListener("input", function () {
+        const searchTerm = this.value.trim().toLowerCase();
+
+        // Clear previous highlights
+        document
+          .querySelectorAll(".highlight")
+          .forEach((el) => el.classList.remove("highlight"));
+        document
+          .querySelectorAll(".squad-highlight")
+          .forEach((el) => el.classList.remove("squad-highlight"));
+
+        if (searchTerm === "") return;
+
+        // Search for person names in tiles and squad tiles
+        document
+          .querySelectorAll(".tile .tower-title, .tile p, .squad-tile p")
+          .forEach((element) => {
+            const text = element.textContent.toLowerCase();
+            if (text.includes(searchTerm)) {
+              element.classList.add("highlight");
+            }
+          });
+
+        // Search for squad names in squad-title
+        document.querySelectorAll(".squad-title").forEach((squad) => {
+          const squadText = squad.textContent.toLowerCase();
+          if (squadText.includes(searchTerm)) {
+            squad.closest(".squad-tile").classList.add("squad-highlight");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
