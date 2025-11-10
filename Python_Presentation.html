@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Why Python for QA Automation?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Tailwind CDN (for styling) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide icons (optional, only for arrows) -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      .slide { page-break-after: always; }
+      .slide:last-child { page-break-after: avoid; }
+    }
+    pre { tab-size: 2; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-8">
+
+<div class="max-w-6xl mx-auto">
+  <div id="slides-container"></div>
+
+  <!-- Navigation (hidden when printing) -->
+  <div class="no-print mt-8 flex justify-between items-center">
+    <button id="prevBtn" class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed">
+      <svg id="chevron-left" data-icon="chevron-left" width="20" height="20"></svg>
+      <span>Previous</span>
+    </button>
+
+    <div class="text-center">
+      <p class="text-sm text-gray-600"><span id="counter">1</span> of <span id="total"></span></p>
+      <div id="dots" class="flex space-x-1 mt-2"></div>
+    </div>
+
+    <button id="nextBtn" class="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed">
+      <span>Next</span>
+      <svg id="chevron-right" data-icon="chevron-right" width="20" height="20"></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  // ------------------------------------------------------------------
+  // 1. All slide definitions (exactly the same JSX → HTML conversion)
+  // ------------------------------------------------------------------
+  const slides = [
+    {
+      title: "Why Python for QA Automation?",
+      subtitle: "A conversation between Katie (Python Trainer) and Srini (QA Engineer)",
+      content: `
+        <div class="space-y-6 text-left">
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">Welcome Srini! I heard you're interested in learning Python for automation testing. What's driving your interest?</p>
+          </div>
+          <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+            <p class="font-semibold text-green-900">Srini:</p>
+            <p class="text-gray-700 mt-2">Hi Katie! I've been doing manual testing for 3 years, and I see automation everywhere. I know some TypeScript with Playwright, but everyone keeps talking about Python. Why is it so popular in testing?</p>
+          </div>
+        </div>`
+    },
+    {
+      title: "The Readability Advantage",
+      content: `
+        <div class="space-y-6 text-left">
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">Great question! Let me show you why Python is called "executable pseudocode." Here's a comparison of the same test in different languages:</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div class="bg-gray-100 p-4 rounded">
+              <p class="font-mono text-sm font-semibold mb-2 text-purple-700">Java:</p>
+              <pre class="text-xs overflow-x-auto bg-white p-3 rounded">public class LoginTest {
+    public void testLogin() {
+        String username = "user";
+        String password = "pass";
+        login(username, password);
+    }
+}</pre>
+            </div>
+            <div class="bg-gray-100 p-4 rounded">
+              <p class="font-mono text-sm font-semibold mb-2 text-blue-700">Python:</p>
+              <pre class="text-xs overflow-x-auto bg-white p-3 rounded">def test_login():
+    username = "user"
+    password = "pass"
+    login(username, password)</pre>
+            </div>
+          </div>
+          <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+            <p class="font-semibold text-green-900">Srini:</p>
+            <p class="text-gray-700 mt-2">Wow, Python is so much cleaner! No curly braces, no semicolons, and I don't need to declare types everywhere.</p>
+          </div>
+        </div>`
+    },
+    {
+      title: "Learning Curve: Python vs Java",
+      content: `
+        <div class="space-y-6 text-left">
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">Exactly! This is crucial for manual testers transitioning to automation. Let me break down the fundamental differences:</p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <table class="w-full text-sm">
+              <thead class="bg-gray-200"><tr>
+                <th class="p-3 text-left">Aspect</th>
+                <th class="p-3 text-left">Python</th>
+                <th class="p-3 text-left">Java</th>
+              </tr></thead>
+              <tbody>
+                <tr class="border-b"><td class="p-3 font-semibold">Type System</td><td class="p-3 text-green-700">Dynamic (no type declaration needed)</td><td class="p-3 text-orange-700">Static (must declare types)</td></tr>
+                <tr class="border-b"><td class="p-3 font-semibold">Compilation</td><td class="p-3 text-green-700">Interpreted (run directly)</td><td class="p-3 text-orange-700">Compiled (build step required)</td></tr>
+                <tr class="border-b"><td class="p-3 font-semibold">Syntax</td><td class="p-3 text-green-700">Indentation-based, minimal</td><td class="p-3 text-orange-700">Verbose with braces & semicolons</td></tr>
+                <tr><td class="p-3 font-semibold">Learning Time</td><td class="p-3 text-green-700">2-3 weeks for basics</td><td class="p-3 text-orange-700">1-2 months for basics</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+            <p class="font-semibold text-green-900">Srini:</p>
+            <p class="text-gray-700 mt-2">So Python is more forgiving for beginners? That sounds perfect for someone coming from manual testing!</p>
+          </div>
+        </div>`
+    },
+    {
+      title: "Rich Testing Ecosystem",
+      content: `
+        <div class="space-y-6 text-left">
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">Absolutely! And here's another huge advantage - Python has an incredible ecosystem of testing libraries. Since you know Playwright with TypeScript, you'll love Python's options:</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-purple-50 p-4 rounded-lg"><h4 class="font-bold text-purple-900 mb-2">Web Automation</h4><ul class="text-sm space-y-1 text-gray-700">
+              <li>• <strong>Selenium</strong> - Industry standard</li>
+              <li>• <strong>Playwright</strong> - Yes, Python too!</li>
+              <li>• <strong>Requests</strong> - API testing made easy</li>
+            </ul></div>
+            <div class="bg-indigo-50 p-4 rounded-lg"><h4 class="font-bold text-indigo-900 mb-2">Test Frameworks</h4><ul class="text-sm space-y-1 text-gray-700">
+              <li>• <strong>Pytest</strong> - Most popular</li>
+              <li>• <strong>Robot Framework</strong> - Keyword-driven</li>
+              <li>• <strong>Behave</strong> - BDD testing</li>
+            </ul></div>
+            <div class="bg-pink-50 p-4 rounded-lg"><h4 class="font-bold text-pink-900 mb-2">Data & Utilities</h4><ul class="text-sm space-y-1 text-gray-700">
+              <li>• <strong>Pandas</strong> - Excel/CSV handling</li>
+              <li>• <strong>Faker</strong> - Test data generation</li>
+              <li>• <strong>Allure</strong> - Beautiful reports</li>
+            </ul></div>
+            <div class="bg-teal-50 p-4 rounded-lg"><h4 class="font-bold text-teal-900 mb-2">Specialized Testing</h4><ul class="text-sm space-y-1 text-gray-700">
+              <li>• <strong>Locust</strong> - Performance testing</li>
+              <li>• <strong>Appium</strong> - Mobile automation</li>
+              <li>• <strong>PyTest-BDD</strong> - Gherkin support</li>
+            </ul></div>
+          </div>
+          <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+            <p class="font-semibold text-green-900">Srini:</p>
+            <p class="text-gray-700 mt-2">Wait, I can use Playwright with Python too? That's amazing! I already know the concepts!</p>
+          </div>
+        </div>`
+    },
+    {
+      title: "Quick Setup & Rapid Prototyping",
+      content: `
+        <div class="space-y-6 text-left">
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">Let me show you how fast you can get started with Python. Here's a complete API test:</p>
+          </div>
+          <div class="bg-gray-900 p-4 rounded-lg">
+            <pre class="text-green-400 text-sm overflow-x-auto">import requests
+
+def test_api_status():
+    response = requests.get("https://api.example.com/users")
+    assert response.status_code == 200
+    assert "users" in response.json()
+    
+# That's it! No setup files, no configuration.
+# Just: pip install requests pytest
+# Then: pytest test_api.py</pre>
+          </div>
+          <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+            <p class="font-semibold text-green-900">Srini:</p>
+            <p class="text-gray-700 mt-2">This is incredibly simple! In Java, I'd need Maven/Gradle files, dependency management, and much more boilerplate code.</p>
+          </div>
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">Exactly! Python's philosophy is "batteries included." You can focus on writing tests, not fighting with configuration. This rapid prototyping is why Python is loved in startups and agile teams.</p>
+          </div>
+        </div>`
+    },
+    {
+      title: "Real-World Automation Example",
+      content: `
+        <div class="space-y-6 text-left">
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">Let me show you a practical example. Suppose you need to read test data from Excel, run tests, and generate reports:</p>
+          </div>
+          <div class="bg-gray-900 p-4 rounded-lg">
+            <pre class="text-green-400 text-xs overflow-x-auto">import pandas as pd
+from playwright.sync_api import sync_playwright
+
+# Read test data from Excel
+test_data = pd.read_excel('test_users.xlsx')
+
+def test_login_multiple_users():
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        
+        # Loop through Excel data
+        for _, row in test_data.iterrows():
+            page.goto('https://example.com/login')
+            page.fill('#username', row['username'])
+            page.fill('#password', row['password'])
+            page.click('#login-btn')
+            
+            assert page.is_visible('text=Dashboard')
+            
+        browser.close()
+
+# This integrates Excel, browser automation, and assertions in ~20 lines!</pre>
+          </div>
+          <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+            <p class="font-semibold text-green-900">Srini:</p>
+            <p class="text-gray-700 mt-2">This is powerful! Reading Excel with pandas is so simple. In Java, I'd need Apache POI and tons of boilerplate code.</p>
+          </div>
+        </div>`
+    },
+    {
+      title: "Python vs TypeScript for QA",
+      content: `
+        <div class="space-y-6 text-left">
+          <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+            <p class="font-semibold text-green-900">Srini:</p>
+            <p class="text-gray-700 mt-2">Katie, I'm already using TypeScript with Playwright. Should I switch to Python or learn both?</p>
+          </div>
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">Great question! Both have their place. Here's my honest comparison:</p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="space-y-4">
+              <div class="border-l-4 border-blue-500 pl-4">
+                <h4 class="font-bold text-blue-900">Choose Python when:</h4>
+                <ul class="text-sm mt-2 space-y-1 text-gray-700">
+                  <li>Working with data analysis, Excel files, CSV processing</li>
+                  <li>Quick scripting and automation tasks</li>
+                  <li>Your team uses Python (easier collaboration)</li>
+                  <li>Backend/API testing is your primary focus</li>
+                  <li>You want the easiest learning curve</li>
+                </ul>
+              </div>
+              <div class="border-l-4 border-purple-500 pl-4">
+                <h4 class="font-bold text-purple-900">Choose TypeScript when:</h4>
+                <ul class="text-sm mt-2 space-y-1 text-gray-700">
+                  <li>Your dev team uses JavaScript/TypeScript</li>
+                  <li>You need better IDE autocomplete and type safety</li>
+                  <li>Testing modern web apps built with React/Angular/Vue</li>
+                  <li>You want to share code with frontend developers</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">My advice? Learn both! TypeScript for Playwright UI testing, Python for API testing, data manipulation, and general automation. They complement each other beautifully.</p>
+          </div>
+        </div>`
+    },
+    {
+      title: "Career Opportunities",
+      content: `
+        <div class="space-y-6 text-left">
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">Let's talk about career growth. Python opens many doors for QA engineers:</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-gradient-to-br from-blue-100 to-blue-200 p-5 rounded-lg">
+              <div class="text-3xl mb-2">Target</div>
+              <h4 class="font-bold text-blue-900 mb-2">SDET Roles</h4>
+              <p class="text-sm text-gray-700">Most SDET positions list Python as required or preferred skill. Average salary boost: 20-30%</p>
+            </div>
+            <div class="bg-gradient-to-br from-green-100 to-green-200 p-5 rounded-lg">
+              <div class="text-3xl mb-2">Robot</div>
+              <h4 class="font-bold text-green-900 mb-2">DevOps Testing</h4>
+              <p class="text-sm text-gray-700">Python is standard for CI/CD pipelines, infrastructure testing, and automation scripts</p>
+            </div>
+            <div class="bg-gradient-to-br from-purple-100 to-purple-200 p-5 rounded-lg">
+              <div class="text-3xl mb-2">Chart</div>
+              <h4 class="font-bold text-purple-900 mb-2">Test Analytics</h4>
+              <p class="text-sm text-gray-700">Analyze test results, create dashboards, and make data-driven decisions with Python</p>
+            </div>
+          </div>
+          <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+            <p class="font-semibold text-green-900">Srini:</p>
+            <p class="text-gray-700 mt-2">So Python isn't just about automation testing - it's a gateway to multiple career paths!</p>
+          </div>
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">Exactly! And the skills transfer to data engineering, backend development, machine learning, and more. It's one of the most versatile languages in tech.</p>
+          </div>
+        </div>`
+    },
+    // --------------------------------------------------------------
+    // 9th slide – WHY PYTHON IS ESSENTIAL FOR AI
+    // --------------------------------------------------------------
+    {
+      title: "Why Python is Essential for AI",
+      content: `
+        <div class="space-y-6 text-left">
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">
+              Let’s talk about the future — <strong>AI is transforming QA</strong>, and Python is the #1 language powering it. Here’s why:
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 p-5 rounded-lg border-l-4 border-indigo-600">
+              <div class="text-3xl mb-2">Brain</div>
+              <h4 class="font-bold text-indigo-900 mb-2">AI-Powered Testing Tools</h4>
+              <ul class="text-sm space-y-1 text-gray-700">
+                <li>• <strong>Testim, Mabl, Applitools</strong> – AI-driven UI testing</li>
+                <li>• <strong>Diffblue Cover</strong> – Auto-generates unit tests</li>
+                <li>• <strong>Functionize</strong> – Self-healing locators</li>
+              </ul>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-lg border-l-4 border-purple-600">
+              <div class="text-3xl mb-2">Robot</div>
+              <h4 class="font-bold text-purple-900 mb-2">Custom AI Automation</h4>
+              <ul class="text-sm space-y-1 text-gray-700">
+                <li>• Use <strong>Tesseract OCR</strong> for image-based testing</li>
+                <li>• <strong>OpenCV</strong> for visual regression</li>
+                <li>• <strong>SpaCy / NLTK</strong> for log & requirement analysis</li>
+              </ul>
+            </div>
+
+            <div class="bg-gradient-to-br from-teal-50 to-teal-100 p-5 rounded-lg border-l-4 border-teal-600">
+              <div class="text-3xl mb-2">Chart Up</div>
+              <h4 class="font-bold text-teal-900 mb-2">Machine Learning Libraries</h4>
+              <ul class="text-sm space-y-1 text-gray-700">
+                <li>• <strong>TensorFlow / PyTorch</strong> – Build smart test oracles</li>
+                <li>• <strong>Scikit-learn</strong> – Predict flaky tests</li>
+                <li>• <strong>Hugging Face</strong> – NLP for test case generation</li>
+              </ul>
+            </div>
+
+            <div class="bg-gradient-to-br from-pink-50 to-pink-100 p-5 rounded-lg border-l-4 border-pink-600">
+              <div class="text-3xl mb-2">Rocket</div>
+              <h4 class="font-bold text-pink-900 mb-2">Future-Proof Your Career</h4>
+              <ul class="text-sm space-y-1 text-gray-700">
+                <li>• AI Test Engineers earn <strong>30–50% more</strong></li>
+                <li>• Python = gateway to <strong>AI + QA = SDET 2.0</strong></li>
+                <li>• Companies like Google, Meta, Tesla hire Python + AI QAs</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500 mt-6">
+            <p class="font-semibold text-green-900">Srini:</p>
+            <p class="text-gray-700 mt-2">
+              So learning Python isn’t just about automation — it’s about being ready for <strong>AI-driven testing</strong>! That’s a game-changer.
+            </p>
+          </div>
+
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">
+              Exactly! Python isn’t just a tool — it’s the <strong>foundation of modern intelligent testing</strong>. Master it, and you’ll lead the next wave of QA innovation.
+            </p>
+          </div>
+        </div>`
+    },
+    {
+      title: "Getting Started - Your Learning Path",
+      content: `
+        <div class="space-y-6 text-left">
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">Ready to start? Here's my recommended 4-week learning path for QA engineers:</p>
+          </div>
+          <div class="space-y-4">
+            <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border-l-4 border-blue-600">
+              <h4 class="font-bold text-blue-900">Week 1: Python Basics</h4>
+              <p class="text-sm text-gray-700 mt-1">Variables, data types, loops, conditionals, functions. Practice with simple scripts.</p>
+            </div>
+            <div class="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg border-l-4 border-green-600">
+              <h4 class="font-bold text-green-900">Week 2: Working with Data</h4>
+              <p class="text-sm text-gray-700 mt-1">Lists, dictionaries, file handling. Learn to read Excel/CSV files with pandas.</p>
+            </div>
+            <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border-l-4 border-purple-600">
+              <h4 class="font-bold text-purple-900">Week 3: Testing Frameworks</h4>
+              <p class="text-sm text-gray-700 mt-1">Learn pytest basics: writing tests, fixtures, assertions, running test suites.</p>
+            </div>
+            <div class="bg-gradient-to-r from-pink-50 to-pink-100 p-4 rounded-lg border-l-4 border-pink-600">
+              <h4 class="font-bold text-pink-900">Week 4: Automation Frameworks</h4>
+              <p class="text-sm text-gray-700 mt-1">Pick Selenium or Playwright. Build your first automated test suite.</p>
+            </div>
+          </div>
+          <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+            <p class="font-semibold text-green-900">Srini:</p>
+            <p class="text-gray-700 mt-2">This seems doable! I'm excited to start. Thanks for breaking it down so clearly, Katie!</p>
+          </div>
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-blue-900">Katie:</p>
+            <p class="text-gray-700 mt-2">You're welcome! Remember: consistency beats intensity. Code for 30 minutes daily, and you'll be automating tests in no time. Good luck, Srini!</p>
+          </div>
+        </div>`
+    },
+    {
+      title: "Key Takeaways",
+      content: `
+        <div class="space-y-6">
+          <h3 class="text-2xl font-bold text-center text-gray-800">Why Python for QA Automation?</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-lg shadow-lg">
+              <div class="text-4xl mb-3">Rocket</div>
+              <h4 class="font-bold text-xl mb-2">Easy to Learn</h4>
+              <p class="text-sm">Readable syntax, no complex setup, perfect for testers transitioning to automation</p>
+            </div>
+            <div class="bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-lg shadow-lg">
+              <div class="text-4xl mb-3">Tools</div>
+              <h4 class="font-bold text-xl mb-2">Rich Ecosystem</h4>
+              <p class="text-sm">Selenium, Playwright, Pytest, Requests - all the tools you need in one place</p>
+            </div>
+            <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-lg shadow-lg">
+              <div class="text-4xl mb-3">Lightning</div>
+              <h4 class="font-bold text-xl mb-2">Rapid Development</h4>
+              <p class="text-sm">Write tests faster with less boilerplate, focus on logic not syntax</p>
+            </div>
+            <div class="bg-gradient-to-br from-pink-500 to-pink-600 text-white p-6 rounded-lg shadow-lg">
+              <div class="text-4xl mb-3">Chart Up</div>
+              <h4 class="font-bold text-xl mb-2">Career Growth</h4>
+              <p class="text-sm">Opens doors to SDET, DevOps, data roles, and higher salary opportunities</p>
+            </div>
+          </div>
+          <div class="bg-gray-800 text-white p-6 rounded-lg text-center">
+            <p class="text-xl font-semibold">Python: The Swiss Army Knife of Test Automation</p>
+            <p class="text-sm mt-2 text-gray-300">Simple enough for beginners, powerful enough for experts</p>
+          </div>
+        </div>`
+    }
+  ];
+
+  // ------------------------------------------------------------------
+  // 2. Render slides
+  // ------------------------------------------------------------------
+  const container = document.getElementById('slides-container');
+  let current = 0;
+
+  function render() {
+    const slide = slides[current];
+    const html = `
+      <div class="slide bg-white rounded-lg shadow-2xl p-8 min-h-[600px] flex flex-col">
+        <div class="flex-1">
+          <div class="mb-6">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">${slide.title}</h2>
+            ${slide.subtitle ? `<p class="text-gray-600 italic">${slide.subtitle}</p>` : ''}
+          </div>
+          <div class="overflow-y-auto max-h-[500px]">
+            ${slide.content}
+          </div>
+        </div>
+      </div>`;
+    container.innerHTML = html;
+
+    // navigation state
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').disabled = current === slides.length - 1;
+    document.getElementById('counter').textContent = current + 1;
+    document.getElementById('total').textContent = slides.length;
+
+    // dots
+    const dots = document.getElementById('dots');
+    dots.innerHTML = slides.map((_, i) => `
+      <div class="h-2 w-2 rounded-full ${i === current ? 'bg-blue-500' : 'bg-gray-300'}"></div>
+    `).join('');
+  }
+
+  // ------------------------------------------------------------------
+  // 3. Navigation handlers
+  // ------------------------------------------------------------------
+  document.getElementById('prevBtn').onclick = () => {
+    if (current > 0) { current--; render(); }
+  };
+  document.getElementById('nextBtn').onclick = () => {
+    if (current < slides.length - 1) { current++; render(); }
+  };
+
+  // ------------------------------------------------------------------
+  // 4. Keyboard navigation (optional)
+  // ------------------------------------------------------------------
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') document.getElementById('prevBtn').click();
+    if (e.key === 'ArrowRight') document.getElementById('nextBtn').click();
+  });
+
+  // ------------------------------------------------------------------
+  // 5. Initialise
+  // ------------------------------------------------------------------
+  document.getElementById('total').textContent = slides.length;
+  render();
+
+  // Replace placeholder emojis with Lucide icons (only for arrows)
+  lucide.createIcons();
+</script>
+</body>
+</html>
